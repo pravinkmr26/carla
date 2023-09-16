@@ -70,7 +70,8 @@ pushd ${CARLA_BUILD_FOLDER} >/dev/null
 # -- Get and compile libc++ ----------------------------------------------------
 # ==============================================================================
 
-LLVM_BASENAME=llvm-8.0
+#LLVM_BASENAME=llvm-8.0
+LLVM_BASENAME=llvm-12.0
 
 LLVM_INCLUDE=${PWD}/${LLVM_BASENAME}-install/include/c++/v1
 LLVM_LIBPATH=${PWD}/${LLVM_BASENAME}-install/lib
@@ -123,15 +124,15 @@ BOOST_BASENAME="boost-${BOOST_VERSION}-${CXX_TAG}"
 
 BOOST_INCLUDE=${PWD}/${BOOST_BASENAME}-install/include
 BOOST_LIBPATH=${PWD}/${BOOST_BASENAME}-install/lib
-
+BOOST_INSTALL_PATH=${PWD}/${BOOST_BASENAME}-install
 for PY_VERSION in ${PY_VERSION_LIST[@]} ; do
 
   SHOULD_BUILD_BOOST=true
   PYTHON_VERSION=$(/usr/bin/env python${PY_VERSION} -V 2>&1)
-  LIB_NAME=${PYTHON_VERSION:7:3}
-  LIB_NAME=${LIB_NAME//.}
-  if [[ -d "${BOOST_BASENAME}-install" ]] ; then
-    if [ -f "${BOOST_BASENAME}-install/lib/libboost_python${LIB_NAME}.a" ] ; then
+  LIB_NAME=${PYTHON_VERSION:7:4}
+  LIB_NAME=${LIB_NAME//.} 
+  if [[ -d ${BOOST_INSTALL_PATH} ]] ; then
+    if [ -f "${BOOST_INSTALL_PATH}/lib/libboost_python${LIB_NAME}.a" ] ; then
       SHOULD_BUILD_BOOST=false
       log "${BOOST_BASENAME} already installed."
     fi
@@ -143,7 +144,7 @@ for PY_VERSION in ${PY_VERSION_LIST[@]} ; do
     BOOST_PACKAGE_BASENAME=boost_${BOOST_VERSION//./_}
 
     log "Retrieving boost."
-    wget "https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION}/source/${BOOST_PACKAGE_BASENAME}.tar.gz" || true
+    #wget "https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION}/source/${BOOST_PACKAGE_BASENAME}.tar.gz" || true
     # try to use the backup boost we have in Jenkins
     if [[ ! -f "${BOOST_PACKAGE_BASENAME}.tar.gz" ]] ; then
       log "Using boost backup"
@@ -181,7 +182,7 @@ for PY_VERSION in ${PY_VERSION_LIST[@]} ; do
     popd >/dev/null
 
     rm -Rf ${BOOST_BASENAME}-source
-    rm ${BOOST_PACKAGE_BASENAME}.tar.gz
+    #rm ${BOOST_PACKAGE_BASENAME}.tar.gz
 
     # Install boost dependencies
     mkdir -p "${LIBCARLA_INSTALL_CLIENT_FOLDER}/include/system"
