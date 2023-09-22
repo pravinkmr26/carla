@@ -26,6 +26,7 @@
 #include "carla/sensor/s11n/NoopSerializer.h"
 #include "carla/sensor/s11n/ObstacleDetectionEventSerializer.h"
 #include "carla/sensor/s11n/RadarSerializer.h"
+#include "carla/sensor/s11n/RadioSerializer.h"
 #include "carla/sensor/s11n/SemanticLidarSerializer.h"
 #include "carla/sensor/s11n/GBufferUint8Serializer.h"
 #include "carla/sensor/s11n/GBufferFloatSerializer.h"
@@ -41,6 +42,7 @@ class ALaneInvasionSensor;
 class AObstacleDetectionSensor;
 class AOpticalFlowCamera;
 class ARadar;
+class ARadioSensor;
 class ARayCastSemanticLidar;
 class ARayCastLidar;
 class ASceneCaptureCamera;
@@ -72,6 +74,7 @@ namespace sensor {
     std::pair<AObstacleDetectionSensor *, s11n::ObstacleDetectionEventSerializer>,
     std::pair<AOpticalFlowCamera *, s11n::OpticalFlowImageSerializer>,
     std::pair<ARadar *, s11n::RadarSerializer>,
+    std::pair<ARadioSensor *, s11n::RadioSerializer>,
     std::pair<ARayCastSemanticLidar *, s11n::SemanticLidarSerializer>,
     std::pair<ARayCastLidar *, s11n::LidarSerializer>,
     std::pair<ARssSensor *, s11n::NoopSerializer>,

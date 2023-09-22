@@ -20,12 +20,12 @@
 
 #include "carla/geom/Math.h"
 
-FActorDefinition RadioSensor::GetSensorDefinition()
+FActorDefinition ARadioSensor::GetSensorDefinition()
 {
-  return UActorBlueprintFunctionLibrary::MakeRadarDefinition();
+  return UActorBlueprintFunctionLibrary::MakeRadioDefinition();
 }
 
-RadioSensor::ARadar(const FObjectInitializer& ObjectInitializer)
+ARadioSensor::ARadioSensor(const FObjectInitializer& ObjectInitializer)
   : Super(ObjectInitializer)
 {
   PrimaryActorTick.bCanEverTick = true;
@@ -38,65 +38,65 @@ RadioSensor::ARadar(const FObjectInitializer& ObjectInitializer)
 
 }
 
-void RadioSensor::Set(const FActorDescription &ActorDescription)
+void ARadioSensor::Set(const FActorDescription &ActorDescription)
 {
   Super::Set(ActorDescription);
-  UActorBlueprintFunctionLibrary::SetRadar(ActorDescription, this);
+  UActorBlueprintFunctionLibrary::SetRadioSensor(ActorDescription, this);
 }
 
-void RadioSensor::SetHorizontalFOV(float NewHorizontalFOV)
+void ARadioSensor::SetHorizontalFOV(float NewHorizontalFOV)
 {
   HorizontalFOV = NewHorizontalFOV;
 }
 
-void  RadioSensor::SetVerticalFOV(float NewVerticalFOV)
+void  ARadioSensor::SetVerticalFOV(float NewVerticalFOV)
 {
   VerticalFOV = NewVerticalFOV;
 }
 
-void RadioSensor::SetRange(float NewRange)
+void ARadioSensor::SetRange(float NewRange)
 {
   Range = NewRange;
 }
 
-void RadioSensor::SetPointsPerSecond(int NewPointsPerSecond)
+void ARadioSensor::SetPointsPerSecond(int NewPointsPerSecond)
 {
   PointsPerSecond = NewPointsPerSecond;
-  RadarData.SetResolution(PointsPerSecond);
+  RadioData.SetResolution(PointsPerSecond);
 }
 
-void RadioSensor::BeginPlay()
+void ARadioSensor::BeginPlay()
 {
   Super::BeginPlay();
 
   PrevLocation = GetActorLocation();
 }
 
-void RadioSensor::PostPhysTick(UWorld *World, ELevelTick TickType, float DeltaTime)
+void ARadioSensor::PostPhysTick(UWorld *World, ELevelTick TickType, float DeltaTime)
 {
-  TRACE_CPUPROFILER_EVENT_SCOPE(RadioSensor::PostPhysTick);
+  TRACE_CPUPROFILER_EVENT_SCOPE(ARadioSensor::PostPhysTick);
   CalculateCurrentVelocity(DeltaTime);
 
-  RadarData.Reset();
+  RadioData.Reset();
   SendLineTraces(DeltaTime);
 
   {
     TRACE_CPUPROFILER_EVENT_SCOPE_STR("Send Stream");
     auto DataStream = GetDataStream(*this);
-    DataStream.Send(*this, RadarData, DataStream.PopBufferFromPool());
+    DataStream.Send(*this, RadioData, DataStream.PopBufferFromPool());
   }
 }
 
-void RadioSensor::CalculateCurrentVelocity(const float DeltaTime)
+void ARadioSensor::CalculateCurrentVelocity(const float DeltaTime)
 {
   const FVector RadarLocation = GetActorLocation();
   CurrentVelocity = (RadarLocation - PrevLocation) / DeltaTime;
   PrevLocation = RadarLocation;
 }
 
-void RadioSensor::SendLineTraces(float DeltaTime)
+void ARadioSensor::SendLineTraces(float DeltaTime)
 {
-  TRACE_CPUPROFILER_EVENT_SCOPE(RadioSensor::SendLineTraces);
+  TRACE_CPUPROFILER_EVENT_SCOPE(ARadioSensor::SendLineTraces);
   constexpr float TO_METERS = 1e-2;
   const FTransform& ActorTransform = GetActorTransform();
   const FRotator& TransformRotator = ActorTransform.Rotator();
@@ -170,7 +170,7 @@ void RadioSensor::SendLineTraces(float DeltaTime)
   // Write the detections in the output structure
   for (auto& ray : Rays) {
     if (ray.Hitted) {
-      RadarData.WriteDetection({
+      RadioData.WriteDetection({
         ray.RelativeVelocity,
         ray.AzimuthAndElevation.X,
         ray.AzimuthAndElevation.Y,
@@ -181,7 +181,7 @@ void RadioSensor::SendLineTraces(float DeltaTime)
 
 }
 
-float RadioSensor::CalculateRelativeVelocity(const FHitResult& OutHit, const FVector& RadarLocation)
+float ARadioSensor::CalculateRelativeVelocity(const FHitResult& OutHit, const FVector& RadarLocation)
 {
   constexpr float TO_METERS = 1e-2;
 

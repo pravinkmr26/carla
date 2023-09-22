@@ -9,7 +9,7 @@
 #include "Carla/Actor/ActorDefinition.h"
 
 #include <compiler/disable-ue4-macros.h>
-#include <carla/sensor/data/RadarData.h>
+#include <carla/sensor/data/RadioData.h>
 #include <compiler/enable-ue4-macros.h>
 
 #include "RadioSensor.generated.h"
@@ -22,13 +22,13 @@ class CARLA_API ARadioSensor : public ASensor
 {
 	GENERATED_BODY()
 	
-	using FRadarData = carla::sensor::data::RadarData;
+	using FRadioData = carla::sensor::data::RadioData;
 
 public:
 
   static FActorDefinition GetSensorDefinition();
 
-  ARadar(const FObjectInitializer &ObjectInitializer);
+  ARadioSensor(const FObjectInitializer &ObjectInitializer);
 
   void Set(const FActorDescription &Description) override;
 
@@ -71,7 +71,7 @@ private:
 
   float CalculateRelativeVelocity(const FHitResult& OutHit, const FVector& RadarLocation);
 
-  FRadarData RadarData;
+  FRadioData RadioData;
 
   FCollisionQueryParams TraceParams;
 
@@ -90,6 +90,4 @@ private:
   };
 
   std::vector<RayData> Rays;
-	
-	
 };

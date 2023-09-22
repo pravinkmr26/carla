@@ -15,6 +15,7 @@ namespace sensor {
 
 namespace s11n {
   class RadarSerializer;
+  class RadioSerializer;
 }
 
 namespace data {
@@ -69,6 +70,7 @@ namespace data {
     std::vector<RadarDetection> _detections;
 
   friend class s11n::RadarSerializer;
+  friend class s11n::RadioSerializer;
   };
 
 } // namespace s11n
