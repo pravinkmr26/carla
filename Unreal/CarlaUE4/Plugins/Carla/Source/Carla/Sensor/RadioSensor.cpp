@@ -162,6 +162,7 @@ void ARadioSensor::SendLineTraces(float DeltaTime)
         );
 
         Rays[idx].Distance = OutHit.Distance * TO_METERS;
+        Rays[idx].HittedActor = OutHit.Actor.
       }
     });
   }

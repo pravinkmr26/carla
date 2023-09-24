@@ -14,30 +14,30 @@ namespace carla {
 namespace sensor {
 
 namespace s11n {
-  class RadarSerializer;
+  class RadioSerializer;
 }
 
 namespace data {
 
-  struct RadarDetection {
+  struct RadioDetection {
     float velocity; // m/s
     float azimuth;  // rad
     float altitude; // rad
     float depth;    // m
   };
 
-  class RadarData {
+  class RadioData {
     static_assert(sizeof(float) == sizeof(uint32_t), "Invalid float size");
-    static_assert(sizeof(float) * 4 == sizeof(RadarDetection), "Invalid RadarDetection size");
+    static_assert(sizeof(float) * 4 == sizeof(RadioDetection), "Invalid RadioDetection size");
 
   public:
-    explicit RadarData() = default;
+    explicit RadioData() = default;
 
-    constexpr static auto detection_size = sizeof(RadarDetection);
+    constexpr static auto detection_size = sizeof(RadioDetection);
 
-    RadarData &operator=(RadarData &&) = default;
+    RadioData &operator=(RadioData &&) = default;
 
-    /// Set a new resolution for the RadarData.
+    /// Set a new resolution for the RadioData.
     /// Allocates / Deallocates space in memory if needed.
     ///
     /// @warning This is expensive, not to be called each tick!
@@ -61,14 +61,14 @@ namespace data {
     }
 
     /// Adds a new detection.
-    void WriteDetection(RadarDetection detection) {
+    void WriteDetection(RadioDetection detection) {
       _detections.push_back(detection);
     }
 
   private:
-    std::vector<RadarDetection> _detections;
+    std::vector<RadioDetection> _detections;
 
-  friend class s11n::RadarSerializer;
+  friend class s11n::RadioSerializer;
   };
 
 } // namespace s11n

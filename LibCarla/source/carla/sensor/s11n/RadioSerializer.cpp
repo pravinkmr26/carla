@@ -6,15 +6,15 @@
 
 #include "carla/sensor/s11n/RadioSerializer.h"
 
-#include "carla/sensor/data/RadarMeasurement.h"
+#include "carla/sensor/data/RadioMeasurement.h"
 
 namespace carla {
 namespace sensor {
 namespace s11n {
 
   SharedPtr<SensorData> RadioSerializer::Deserialize(RawData &&data) {
-    return SharedPtr<data::RadarMeasurement>(
-        new data::RadarMeasurement{std::move(data)});
+    return SharedPtr<data::RadioMeasurement>(
+        new data::RadioMeasurement{std::move(data)});
   }
 
 } // namespace s11n

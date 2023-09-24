@@ -84,6 +84,7 @@ private:
     float Radius;
     float Angle;
     bool Hitted;
+    int HittedActor;
     float RelativeVelocity;
     FVector2D AzimuthAndElevation;
     float Distance;
