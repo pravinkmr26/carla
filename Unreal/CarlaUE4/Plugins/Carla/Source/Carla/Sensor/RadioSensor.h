@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <string>
 
 #include "Carla/Sensor/Sensor.h"
 
@@ -84,7 +84,8 @@ private:
     float Radius;
     float Angle;
     bool Hitted;
-    int HittedActor;
+    std::string HittedActor;
+    uint32_t HittedActorId;
     float RelativeVelocity;
     FVector2D AzimuthAndElevation;
     float Distance;
