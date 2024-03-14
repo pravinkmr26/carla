@@ -24,11 +24,12 @@ namespace data {
     float azimuth;  // rad
     float altitude; // rad
     float depth;    // m
+    uint32_t hitted_actor_id;
   };
 
   class RadioData {
     static_assert(sizeof(float) == sizeof(uint32_t), "Invalid float size");
-    static_assert(sizeof(float) * 4 == sizeof(RadioDetection), "Invalid RadioDetection size");
+    static_assert(sizeof(float) * 5 == sizeof(RadioDetection), "Invalid RadioDetection size");
 
   public:
     explicit RadioData() = default;

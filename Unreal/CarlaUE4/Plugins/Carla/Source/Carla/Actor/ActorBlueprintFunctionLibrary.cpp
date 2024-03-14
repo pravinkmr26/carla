@@ -901,7 +901,7 @@ FActorDefinition UActorBlueprintFunctionLibrary::MakeRadioDefinition()
 {
   FActorDefinition Definition;
   bool Success;
-  MakeRadarDefinition(Success, Definition);
+  MakeRadioDefinition(Success, Definition);
   check(Success);
   return Definition;
 }
