@@ -22,6 +22,12 @@ import carla
 import random
 import time
 
+def callback(data):
+    set_of_actors = set()
+    for detection in data:
+        set_of_actors.add(detection.hitted_actor_id)
+    print(set_of_actors)
+
 
 def main():
     actor_list = []
@@ -55,14 +61,14 @@ def main():
 
         cc = carla.ColorConverter.LogarithmicDepth
         
-        radio.listen(lambda radio_detection: print(radio_detection))
+        radio.listen(lambda radio_detection: callback(radio_detection))
 
         location = vehicle.get_location()
         location.x += 40
         vehicle.set_location(location)
         print('moved vehicle to %s' % location)
 
-        time.sleep(500)
+        time.sleep(5)
 
     finally:
 

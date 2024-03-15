@@ -19,6 +19,7 @@
 #include <carla/sensor/data/SemanticLidarMeasurement.h>
 #include <carla/sensor/data/GnssMeasurement.h>
 #include <carla/sensor/data/RadarMeasurement.h>
+#include <carla/sensor/data/RadioMeasurement.h>
 #include <carla/sensor/data/DVSEventArray.h>
 
 #include <carla/sensor/data/RadarData.h>
@@ -119,6 +120,15 @@ namespace data {
     return out;
   }
 
+
+  std::ostream &operator<<(std::ostream &out, const RadioMeasurement &meas) {
+    out << "RadioMeasurement(frame=" << std::to_string(meas.GetFrame())
+        << ", timestamp=" << std::to_string(meas.GetTimestamp())
+        << ", point_count=" << std::to_string(meas.GetDetectionAmount())
+        << ')';
+    return out;
+  }
+
   std::ostream &operator<<(std::ostream &out, const DVSEvent &event) {
     out << "Event(x=" << std::to_string(event.x)
         << ", y=" << std::to_string(event.y)
@@ -139,6 +149,15 @@ namespace data {
 
   std::ostream &operator<<(std::ostream &out, const RadarDetection &det) {
     out << "RadarDetection(velocity=" << std::to_string(det.velocity)
+        << ", azimuth=" << std::to_string(det.azimuth)
+        << ", altitude=" << std::to_string(det.altitude)
+        << ", depth=" << std::to_string(det.depth)
+        << ')';
+    return out;
+  }
+
+  std::ostream &operator<<(std::ostream &out, const RadioDetection &det) {
+    out << "RadioDetection(velocity=" << std::to_string(det.velocity)
         << ", azimuth=" << std::to_string(det.azimuth)
         << ", altitude=" << std::to_string(det.altitude)
         << ", depth=" << std::to_string(det.depth)
@@ -527,6 +546,30 @@ void export_sensor_data() {
     .def_readwrite("azimuth", &csd::RadarDetection::azimuth)
     .def_readwrite("altitude", &csd::RadarDetection::altitude)
     .def_readwrite("depth", &csd::RadarDetection::depth)
+    .def(self_ns::str(self_ns::self))
+  ;
+
+
+  class_<csd::RadioMeasurement, bases<cs::SensorData>, boost::noncopyable, boost::shared_ptr<csd::RadioMeasurement>>("RadioMeasurement", no_init)
+    .add_property("raw_data", &GetRawDataAsBuffer<csd::RadioMeasurement>)
+    .def("get_detection_count", &csd::RadioMeasurement::GetDetectionAmount)
+    .def("__len__", &csd::RadioMeasurement::size)
+    .def("__iter__", iterator<csd::RadioMeasurement>())
+    .def("__getitem__", +[](const csd::RadioMeasurement &self, size_t pos) -> csd::RadioDetection {
+      return self.at(pos);
+    })
+    .def("__setitem__", +[](csd::RadioMeasurement &self, size_t pos, const csd::RadioDetection &detection) {
+      self.at(pos) = detection;
+    })
+    .def(self_ns::str(self_ns::self))
+  ;
+
+  class_<csd::RadioDetection>("RadioDetection")
+    .def_readwrite("velocity", &csd::RadioDetection::velocity)
+    .def_readwrite("azimuth", &csd::RadioDetection::azimuth)
+    .def_readwrite("altitude", &csd::RadioDetection::altitude)
+    .def_readwrite("depth", &csd::RadioDetection::depth)
+    .def_readwrite("hitted_actor_id", &csd::RadioDetection::hitted_actor_id)
     .def(self_ns::str(self_ns::self))
   ;
 
