@@ -11,6 +11,9 @@
 #include <cstdio>
 
 namespace carla {
+  namespace ros2 {
+  class ROS2;
+}
 namespace sensor {
 
 namespace s11n {
@@ -19,17 +22,13 @@ namespace s11n {
 
 namespace data {
 
-  struct RadioDetection {
-    float velocity; // m/s
-    float azimuth;  // rad
-    float altitude; // rad
-    float depth;    // m
+  struct RadioDetection {    
     uint32_t hitted_actor_id;
   };
 
   class RadioData {
-    static_assert(sizeof(float) == sizeof(uint32_t), "Invalid float size");
-    static_assert(sizeof(float) * 5 == sizeof(RadioDetection), "Invalid RadioDetection size");
+    // static_assert(sizeof(float) == sizeof(uint32_t), "Invalid float size");
+    static_assert(sizeof(uint32_t) * 1 == sizeof(RadioDetection), "Invalid RadioDetection size");
 
   public:
     explicit RadioData() = default;
@@ -70,6 +69,7 @@ namespace data {
     std::vector<RadioDetection> _detections;
 
   friend class s11n::RadioSerializer;
+  friend class carla::ros2::ROS2;
   };
 
 } // namespace s11n

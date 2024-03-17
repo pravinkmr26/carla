@@ -12,6 +12,7 @@
 #include "carla/sensor/data/LidarData.h"
 #include "carla/sensor/data/SemanticLidarData.h"
 #include "carla/sensor/data/RadarData.h"
+#include "carla/sensor/data/RadioData.h"
 #include "carla/sensor/data/Image.h"
 #include "carla/sensor/s11n/ImageSerializer.h"
 #include "carla/sensor/s11n/SensorHeaderSerializer.h"
@@ -28,6 +29,7 @@
 #include "publishers/CarlaLidarPublisher.h"
 #include "publishers/CarlaSemanticLidarPublisher.h"
 #include "publishers/CarlaRadarPublisher.h"
+#include "publishers/CarlaRadioPublisher.h"
 #include "publishers/CarlaIMUPublisher.h"
 #include "publishers/CarlaGNSSPublisher.h"
 #include "publishers/CarlaMapSensorPublisher.h"
@@ -59,6 +61,7 @@ enum ESensors {
   ObstacleDetectionSensor,
   OpticalFlowCamera,
   Radar,
+  Radio,
   RayCastSemanticLidar,
   RayCastLidar,
   RssSensor,
@@ -360,6 +363,24 @@ std::pair<std::shared_ptr<CarlaPublisher>, std::shared_ptr<CarlaTransformPublish
           publisher = new_publisher;
         }
         std::shared_ptr<CarlaTransformPublisher> new_transform = std::make_shared<CarlaTransformPublisher>(ros_name.c_str(), parent_ros_name.c_str());
+        if (new_transform->Init()) {
+          _transforms.insert({actor, new_transform});
+          transform = new_transform;
+        }
+      } break;
+      case ESensors::Radio: {
+        if (ros_name == "radio__") {
+          ros_name.pop_back();
+          ros_name.pop_back();
+          ros_name += string_id;
+          UpdateActorRosName(actor, ros_name);
+        }
+        auto new_publisher = std::make_shared<CarlaRadioPublisher>(ros_name.c_str(), parent_ros_name.c_str());
+        if (new_publisher->Init()) {
+          _publishers.insert({actor, new_publisher});
+          publisher = new_publisher;
+        }
+        auto new_transform = std::make_shared<CarlaTransformPublisher>(ros_name.c_str(), parent_ros_name.c_str());
         if (new_transform->Init()) {
           _transforms.insert({actor, new_transform});
           transform = new_transform;
@@ -784,6 +805,29 @@ void ROS2::ProcessDataFromRadar(
     const carla::sensor::data::RadarData &data,
     void *actor) {
   log_info("Sensor Radar to ROS data: frame.", _frame, "sensor.", sensor_type, "stream.", stream_id, "points.", data._detections.size());
+  auto sensors = GetOrCreateSensor(ESensors::Radar, stream_id, actor);
+  if (sensors.first) {
+    std::shared_ptr<CarlaRadarPublisher> publisher = std::dynamic_pointer_cast<CarlaRadarPublisher>(sensors.first);
+    size_t elements = data.GetDetectionCount();
+    size_t width = elements * sizeof(carla::sensor::data::RadarDetection);
+    size_t height = 1;
+    publisher->SetData(_seconds, _nanoseconds, height, width, elements, (const uint8_t*)data._detections.data());
+    publisher->Publish();
+  }
+  if (sensors.second) {
+    std::shared_ptr<CarlaTransformPublisher> publisher = std::dynamic_pointer_cast<CarlaTransformPublisher>(sensors.second);
+    publisher->SetData(_seconds, _nanoseconds, (const float*)&sensor_transform.location, (const float*)&sensor_transform.rotation);
+    publisher->Publish();
+  }
+}
+
+void ROS2::ProcessDataFromRadio(
+    uint64_t sensor_type,
+    carla::streaming::detail::stream_id_type stream_id,
+    const carla::geom::Transform sensor_transform,
+    const carla::sensor::data::RadioData &data,
+    void *actor) {
+  log_info("Sensor Radar to ROS data: frame.", _frame, "sensor.", sensor_type, "stream.", stream_id, "points.", data.detection_size);
   auto sensors = GetOrCreateSensor(ESensors::Radar, stream_id, actor);
   if (sensors.first) {
     std::shared_ptr<CarlaRadarPublisher> publisher = std::dynamic_pointer_cast<CarlaRadarPublisher>(sensors.first);

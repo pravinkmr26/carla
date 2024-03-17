@@ -96,11 +96,11 @@ void ARadioSensor::PostPhysTick(UWorld *World, ELevelTick TickType, float DeltaT
     if (ParentActor)
     {
       FTransform LocalTransformRelativeToParent = GetActorTransform().GetRelativeTransform(ParentActor->GetActorTransform());
-      ROS2->ProcessDataFromRadar(DataStream.GetSensorType(), StreamId, LocalTransformRelativeToParent, RadarData, this);
+      ROS2->ProcessDataFromRadio(DataStream.GetSensorType(), StreamId, LocalTransformRelativeToParent, RadioData, this);
     }
     else
     {
-      ROS2->ProcessDataFromRadar(DataStream.GetSensorType(), StreamId, DataStream.GetSensorTransform(), RadarData, this);
+      ROS2->ProcessDataFromRadio(DataStream.GetSensorType(), StreamId, DataStream.GetSensorTransform(), RadioData, this);
     }
   }
   #endif
@@ -197,11 +197,7 @@ void ARadioSensor::SendLineTraces(float DeltaTime)
   // Write the detections in the output structure
   for (auto& ray : Rays) {
     if (ray.Hitted) {
-      RadioData.WriteDetection({
-        ray.RelativeVelocity,
-        ray.AzimuthAndElevation.X,
-        ray.AzimuthAndElevation.Y,
-        ray.Distance,
+      RadioData.WriteDetection({        
         ray.HittedActorId
       });
     }

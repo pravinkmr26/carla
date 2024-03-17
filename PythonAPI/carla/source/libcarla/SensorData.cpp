@@ -157,10 +157,7 @@ namespace data {
   }
 
   std::ostream &operator<<(std::ostream &out, const RadioDetection &det) {
-    out << "RadioDetection(velocity=" << std::to_string(det.velocity)
-        << ", azimuth=" << std::to_string(det.azimuth)
-        << ", altitude=" << std::to_string(det.altitude)
-        << ", depth=" << std::to_string(det.depth)
+    out << "RadioDetection(hitted_actor_id=" << std::to_string(det.hitted_actor_id)        
         << ')';
     return out;
   }
@@ -565,10 +562,6 @@ void export_sensor_data() {
   ;
 
   class_<csd::RadioDetection>("RadioDetection")
-    .def_readwrite("velocity", &csd::RadioDetection::velocity)
-    .def_readwrite("azimuth", &csd::RadioDetection::azimuth)
-    .def_readwrite("altitude", &csd::RadioDetection::altitude)
-    .def_readwrite("depth", &csd::RadioDetection::depth)
     .def_readwrite("hitted_actor_id", &csd::RadioDetection::hitted_actor_id)
     .def(self_ns::str(self_ns::self))
   ;
