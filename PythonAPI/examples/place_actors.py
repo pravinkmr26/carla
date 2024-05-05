@@ -68,7 +68,7 @@ def main():
         vehicle.set_location(location)
         print('moved vehicle to %s' % location)
 
-        time.sleep(5)
+        time.sleep(50)
 
     finally:
 
