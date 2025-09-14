@@ -140,7 +140,6 @@ void ALargeMapManager::AdjustSignHeightToGround(FVector& SpawnLocation, const FS
   const FVector Start = SpawnLocation + FVector(0, 0, 10.0f);
   const FVector End = SpawnLocation - FVector(0, 0, 20000.0f);
 
-
   FHitResult HitResult;
   FCollisionQueryParams CollisionParams;
   CollisionParams.bTraceComplex = true;
@@ -159,10 +158,9 @@ void ALargeMapManager::AdjustSignHeightToGround(FVector& SpawnLocation, const FS
   }
   else
   {
-    LM_LOG(Warning, "Could not find ground for traffic sign %s placement at location %s", *ActorName, *SpawnLocation.ToString());
+ 
   }
 }
-
 
 void ALargeMapManager::AdjustAllSignsToHeightGround()
 {
@@ -189,7 +187,6 @@ void ALargeMapManager::AdjustAllSignsToHeightGround()
     Actor->GetRootComponent()->SetMobility(EComponentMobility::Static);
   }
 }
-
 
 void ALargeMapManager::OnLevelAddedToWorld(ULevel* InLevel, UWorld* InWorld)
 {
