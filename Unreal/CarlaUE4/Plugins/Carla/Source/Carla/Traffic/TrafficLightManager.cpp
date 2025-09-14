@@ -291,7 +291,6 @@ void ATrafficLightManager::GenerateSignalsAndTrafficLights()
 
     TrafficLightsGenerated = true;
 
-    GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATrafficLightManager::AdjustAllSignsToHeightGround, 10.0f, false);
   }
 }
 
