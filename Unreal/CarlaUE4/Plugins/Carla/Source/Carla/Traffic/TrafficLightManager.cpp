@@ -291,6 +291,11 @@ void ATrafficLightManager::GenerateSignalsAndTrafficLights()
 
     TrafficLightsGenerated = true;
 
+    if (CurrentMapName.Equals(TEXT("Town15"), ESearchCase::IgnoreCase))
+    {
+      AdjustAllSignsToHeightGround();
+    }
+
   }
 }
 
