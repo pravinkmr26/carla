@@ -167,6 +167,7 @@ void ACarlaGameModeBase::InitGame(
     StoreSpawnPoints();
     SpawnRoadSplines();
   }
+
 }
 
 void ACarlaGameModeBase::RestartPlayer(AController *NewPlayer)
