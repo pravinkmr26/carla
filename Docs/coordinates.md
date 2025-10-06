@@ -77,7 +77,7 @@ rotation = carla.Rotation(10,90,10) # pitch, yaw, roll
 rotation = carla.Rotation(pitch=10, yaw=90, roll=10)
 
 # Default constructor with no arguments
-rotation = carla.Rotation(10,90,10) # pitch=yaw=roll=0
+rotation = carla.Rotation() # pitch=yaw=roll=0
 ```
 
 Each or all the keyword arguments can be omitted and the relevant angle will be set to zero. 
