@@ -1,7 +1,9 @@
+# Standard HD 720p, 90° FOV Test Config
+# 1280x720, 90° FOV (CARLA default)
 - sensor: rgb
   attributes:
-    image_size_x: 1920
-    image_size_y: 1080
+    image_size_x: 1280
+    image_size_y: 720
     fov: 90
   transform:
     location:
@@ -9,13 +11,13 @@
       y: 0
       z: 1.8
     rotation:
-      pitch: 8
+      pitch: 0
       yaw: 0
       roll: 0
 - sensor: normals
   attributes:
-    image_size_x: 1920
-    image_size_y: 1080
+    image_size_x: 1280
+    image_size_y: 720
     fov: 90
   transform:
     location:
@@ -23,13 +25,13 @@
       y: 0
       z: 1.8
     rotation:
-      pitch: 8
+      pitch: 0
       yaw: 0
       roll: 0
 - sensor: depth
   attributes:
-    image_size_x: 1920
-    image_size_y: 1080
+    image_size_x: 1280
+    image_size_y: 720
     fov: 90
   transform:
     location:
@@ -37,13 +39,13 @@
       y: 0
       z: 1.8
     rotation:
-      pitch: 8
+      pitch: 0
       yaw: 0
       roll: 0
 - sensor: semantic_segmentation
   attributes:
-    image_size_x: 1920
-    image_size_y: 1080
+    image_size_x: 1280
+    image_size_y: 720
     fov: 90
   transform:
     location:
@@ -51,13 +53,13 @@
       y: 0
       z: 1.8
     rotation:
-      pitch: 8
+      pitch: 0
       yaw: 0
       roll: 0
 - sensor: instance_segmentation
   attributes:
-    image_size_x: 1920
-    image_size_y: 1080
+    image_size_x: 1280
+    image_size_y: 720
     fov: 90
   transform:
     location:
@@ -65,13 +67,13 @@
       y: 0
       z: 1.8
     rotation:
-      pitch: 8
+      pitch: 0
       yaw: 0
       roll: 0
 - sensor: rds_hq
   attributes:
-    image_size_x: 1920
-    image_size_y: 1080
+    image_size_x: 1280
+    image_size_y: 720
     fov: 90
   transform:
     location:
@@ -79,6 +81,6 @@
       y: 0.0
       z: 1.8
     rotation:
-      pitch: 8
+      pitch: 0
       yaw: 0
       roll: 0
