@@ -9,7 +9,7 @@ interactive 3D test environments where developers can modify the scene and see h
 add synthetic objects, and apply randomization — such as a child following a bouncing ball into the road — making the initial scenarios
 even more challenging. With the NuRec gRPC API, developers can bring rendering services directly to their simulation platform of choice, for example, CARLA.
 
-The NuRec gRPC API serves as a conduit of data and rendering between the CARLA replay and the NuRec container, where the scenes are reconstructed and rendered. You can load pre-trained scenes from the NVIDIA Physical AI Dataset for Autonomous Vehicles and define your scenes using the NuRec gRPC API in a python script (`replay_recording.py`). The diagram below further illustrates the relationship between NuRec and CARLA. 
+The NuRec gRPC API serves as a conduit of data and rendering between the CARLA replay and the NuRec container, where the scenes are reconstructed and rendered. You can load pre-trained scenes from the NVIDIA Physical AI Dataset for Autonomous Vehicles and define your scenes using the NuRec gRPC API in a python script (`example_nurec_replay_save_images.py`). The diagram below further illustrates the relationship between NuRec and CARLA. 
 
 ![NVIDIA NuRec and CARLA](img/carla-nurec-api.svg)
 
