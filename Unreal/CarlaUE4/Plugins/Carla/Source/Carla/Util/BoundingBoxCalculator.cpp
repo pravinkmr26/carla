@@ -66,46 +66,24 @@ FBoundingBox UBoundingBoxCalculator::GetActorBoundingBox(const AActor *Actor, ui
         return Box;
       }
     }
-    // Traffic sign.
-    auto TrafficSign = Cast<ATrafficSignBase>(Actor);
-    if (TrafficSign != nullptr)
-    {
-      // first return a merge of the generated trigger boxes, if any
-      auto TriggerVolumes = TrafficSign->GetTriggerVolumes();
-      if (TriggerVolumes.Num() > 0)
-      {
-        FBoundingBox Box = UBoundingBoxCalculator::CombineBoxes(TriggerVolumes);
-        FTransform Transform = Actor->GetActorTransform();
-        Box.Origin = Transform.InverseTransformPosition(Box.Origin);
-        Box.Rotation = Transform.InverseTransformRotation(Box.Rotation.Quaternion()).Rotator();
-        return Box;
-      }
-      // try to return the original bounding box
-      auto TriggerVolume = TrafficSign->GetTriggerVolume();
-      if (TriggerVolume != nullptr)
-      {
-          auto Transform = TriggerVolume->GetRelativeTransform();
-          return
-          {
-              Transform.GetTranslation(),
-              TriggerVolume->GetScaledBoxExtent(),
-              Transform.GetRotation().Rotator()
-          };
-      }
-      else
-      {
-        UE_LOG(LogCarla, Warning, TEXT("Traffic sign missing trigger volume: %s"), *Actor->GetName());
-        return {};
-      }
-    }
-    // Other, by default BB
-    TArray<FBoundingBox> BBs = GetBBsOfActor(Actor);
-    FBoundingBox BB = CombineBBs(BBs);
-    // Conver to local space; GetBBsOfActor return BBs in world space
+    // Traffic sign - calculate BB in local space to maintain proper orientation
+    TArray<FBoundingBox> BBsWorld = GetBBsOfActor(Actor);
+
+    // Transform all BBs to local space first
     FTransform Transform = Actor->GetActorTransform();
-    BB.Origin = Transform.InverseTransformPosition(BB.Origin);
-    BB.Rotation = Transform.InverseTransformRotation(BB.Rotation.Quaternion()).Rotator();
-    BB.Rotation = Transform.GetRotation().Rotator();
+
+    TArray<FBoundingBox> BBsLocal;
+    for (const FBoundingBox& BBWorld : BBsWorld)
+    {
+      FBoundingBox BBLocal;
+      BBLocal.Origin = Transform.InverseTransformPosition(BBWorld.Origin);
+      BBLocal.Extent = BBWorld.Extent; // Extent doesn't change
+      BBLocal.Rotation = FRotator(0, 0, 0); // In local space, no rotation
+      BBsLocal.Add(BBLocal);
+    }
+
+    FBoundingBox BB = CombineBBs(BBsLocal);
+    BB.Rotation = FRotator(0, 0, 0);
     return BB;
 
   }
@@ -264,10 +242,10 @@ FBoundingBox UBoundingBoxCalculator::GetSkeletalMeshBoundingBoxFromComponent(
 
   // Force update bounds
   const_cast<USkeletalMeshComponent*>(SkeletalMeshComp)->UpdateBounds();
-  
+
   // Get the AABB in local space (component space)
   FBox LocalBox = SkeletalMeshComp->CalcBounds(FTransform::Identity).GetBox();
-  
+
   // Extract extent in local space and set origin to zero
   FVector Origin = {0.0f, 0.0f, 0.0f};
   FVector Extent = LocalBox.GetExtent();
@@ -678,4 +656,59 @@ void UBoundingBoxCalculator::GetMeshCompsFromActorBoundingBox(
       OutStaticMeshComps.Emplace(Comp);
     }
   }
+}
+
+FBoundingBox UBoundingBoxCalculator::GetTrafficSignTriggerVolume(const AActor *Actor)
+{
+  if (Actor != nullptr)
+  {
+    auto TrafficSign = Cast<ATrafficSignBase>(Actor);
+    if (TrafficSign != nullptr)
+    {
+      // first return a merge of the generated trigger boxes, if any
+      auto TriggerVolumes = TrafficSign->GetTriggerVolumes();
+      if (TriggerVolumes.Num() > 0)
+      {
+        // Transform all trigger volumes to local space first (same as bounding boxes)
+        FTransform Transform = Actor->GetActorTransform();
+        TArray<FBoundingBox> TriggerVolumesLocal;
+
+        for (UBoxComponent* TriggerVolume : TriggerVolumes)
+        {
+          FBoundingBox TVWorld;
+          TVWorld.Origin = TriggerVolume->GetComponentLocation();
+          TVWorld.Extent = TriggerVolume->GetScaledBoxExtent();
+          TVWorld.Rotation = TriggerVolume->GetComponentRotation();
+
+          FBoundingBox TVLocal;
+          TVLocal.Origin = Transform.InverseTransformPosition(TVWorld.Origin);
+          TVLocal.Extent = TVWorld.Extent; // Extent doesn't change
+          TVLocal.Rotation = FRotator(0, 0, 0); // In local space, no rotation
+          TriggerVolumesLocal.Add(TVLocal);
+        }
+
+        FBoundingBox Box = CombineBBs(TriggerVolumesLocal);
+        Box.Rotation = FRotator(0, 0, 0);
+        return Box;
+      }
+      // try to return the original bounding box
+      auto TriggerVolume = TrafficSign->GetTriggerVolume();
+      if (TriggerVolume != nullptr)
+      {
+          auto Transform = TriggerVolume->GetRelativeTransform();
+          return
+          {
+              Transform.GetTranslation(),
+              TriggerVolume->GetScaledBoxExtent(),
+              Transform.GetRotation().Rotator()
+          };
+      }
+      else
+      {
+        UE_LOG(LogCarla, Warning, TEXT("Traffic sign missing trigger volume: %s"), *Actor->GetName());
+        return {};
+      }
+    }
+  }
+  return {};
 }
