@@ -1098,7 +1098,7 @@ BIND_SYNC(send) << [this](
         CarlaActor->SetWalkerState(
             Transform,
             cr::WalkerControl(
-              Transform.GetForwardVector(), Speed, false));
+              Transform.GetForwardVector(), Speed, false, float(Episode->GetElapsedGameTime())));
     if (Response != ECarlaServerResponse::Success)
     {
       return RespondError(
